@@ -17,17 +17,15 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: eu-west-1
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry-type: public
 
       - uses: actions/checkout@v3
       - run: nuget restore WebConfigTestApp.sln
       - run: msbuild -verbosity:minimal /p:WarningLevel=0 /t:WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=".\obj\Docker\publish"
       - run: |
           docker build -t composable-web-config-poc .
-          docker tag composable-web-config-poc:latest public.ecr.aws/h2w6a0g5/webconfig-test-app:latest
-      - run: docker push public.ecr.aws/h2w6a0g5/webconfig-test-app:latest
+          docker tag composable-web-config-poc:latest 462027713001.dkr.ecr.eu-west-1.amazonaws.com/webconfig-test-app:${{ github.run_id }}
+      - run: docker push 462027713001.dkr.ecr.eu-west-1.amazonaws.com/webconfig-test-app:${{ github.run_id }}
       
