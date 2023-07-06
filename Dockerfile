@@ -1,4 +1,4 @@
-FROM artifacts.rbi.tech/mcr.microsoft.com-docker-proxy/dotnet/framework/aspnet:4.8-windowsservercore-ltsc2019
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-ltsc2019
 
 #RUN ["$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 #RUN "msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn"
