@@ -1,0 +1,13 @@
+name: cicd
+
+on:
+  push:
+
+jobs:
+  Build:
+    runs-on: ["windows-latest"]
+    steps:
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - run: msbuild  -verbosity:minimal /p:WarningLevel=0 /t:WebPublish  /p:WebPublishMethod=FileSystem /p:publishUrl=".\obj\Docker\publish"
+      - run: docker build -t composable-web-config-poc .
