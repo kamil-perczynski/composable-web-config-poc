@@ -21,8 +21,6 @@ COPY ./obj/Docker/publish/ .
 
 EXPOSE 80
 
-WORKDIR "/"
-
 COPY entrypoint.ps1 /
 
 ENTRYPOINT ["powershell", "-File", "/entrypoint.ps1"]
