@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -15,15 +16,32 @@ namespace WebConfigTestApp.Controllers
         // GET api/values
         public HttpResponseMessage Get()
         {
-            string[] result = new string[] { 
-                "value1", 
-                "value2", 
-                ConfigurationManager.AppSettings["WooBoo"], 
-                ConfigurationManager.AppSettings["BooWee"],
-                ConfigurationManager.ConnectionStrings["CentaurEntities"].ConnectionString 
-            };
+            ValuesResult valuesResult = ToValuesResult();
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, valuesResult);
+        }
+
+        private static ValuesResult ToValuesResult()
+        {
+            Dictionary<string, string> appsettings = new Dictionary<string, string>();
+            Dictionary<string, string> connectionStrings = new Dictionary<string, string>();
+
+
+            ConfigurationManager.AppSettings.AllKeys.ForEach(key =>
+                appsettings.Add(key, ConfigurationManager.AppSettings.Get(key))
+            );
+
+            ConfigurationManager.ConnectionStrings.Cast<ConnectionStringSettings>().ForEach(connectionString =>
+                connectionStrings.Add(connectionString.Name, connectionString.ConnectionString)
+            );
+
+
+            ValuesResult valuesResult = new ValuesResult()
+            {
+                connectionStrings = connectionStrings,
+                appsettings = appsettings
+            };
+            return valuesResult;
         }
 
         // GET api/values/5
@@ -46,5 +64,12 @@ namespace WebConfigTestApp.Controllers
         public void Delete(int id)
         {
         }
+    }
+
+    public class ValuesResult
+    {
+        public Dictionary<string, string> appsettings { get; set; }
+        public Dictionary<string, string> connectionStrings { get; set; }
+
     }
 }
